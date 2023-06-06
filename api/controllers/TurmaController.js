@@ -50,8 +50,18 @@ class TurmaController {
     const { id } = req.params
     try {
       await database.Turmas.destroy({ where: { id: Number(id) }})
-      return res.status(200).json({ mensagem: `id ${id} deletado` })
+      return res.status(200).json({ mensagem: `Id ${id} successfully deleted.` })
 
+    } catch (error) {
+      return res.status(500).json(error.message)
+    }
+  }
+
+  static async restauraTurma(req, res) {
+    const { id } = req.params
+    try {
+      await database.Turmas.restore( {where: { id: Number(id) } } )
+      return res.status(200).json({ mensagem: `Id ${id} successfully restored.`})
     } catch (error) {
       return res.status(500).json(error.message)
     }
