@@ -6,5 +6,5 @@ var _require = require('express'),
 var NivelController = require('../controllers/NivelController');
 
 var router = Router();
-router.get('/niveis', NivelController.pegaTodosOsNiveis).get('/niveis/:id', NivelController.pegaUmNivel).post('/niveis', NivelController.criaNivel).put('/niveis/:id', NivelController.atualizaNivel)["delete"]('/niveis/:id', NivelController.apagaNivel).post('/niveis/:id/restaura', NivelController.restauraNivel);
+router.get('/niveis', NivelController.pegaTodosOsNiveis).get('/niveis/:id', NivelController.pegaUmNivel).post('/niveis', NivelController.criaNivel).put('/niveis/:id', NivelController.atualizaNivel)["delete"]('/niveis/:id', NivelController.apagaNivel).post('/niveis/:id/restaura', NivelController.restauraNivel)["delete"]('/niveis/:id/force', NivelController.apagaDefinitivoNivel);
 module.exports = router;

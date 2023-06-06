@@ -67,6 +67,21 @@ class NivelController {
     }
   }
 
+  static async apagaDefinitivoNivel(req, res) {
+    const { id } = req.params
+    try {
+      await database.Niveis.destroy({ where: {
+        id: Number(id)
+      },
+      force: true
+    })
+      return res.status(200).json({ mensagem: `Id ${id} permanently deleted.` })
+
+    } catch (error) {
+      return res.status(500).json(error.message)
+    }
+  }
+
 }
 
 module.exports = NivelController

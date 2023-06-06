@@ -13,6 +13,10 @@ router.post('/pessoas/:estudanteId/matricula', PessoaController.criaMatricula);
 router.put('/pessoas/:estudanteId/matricula/:matriculaId', PessoaController.atualizaMatricula);
 router.delete('/pessoas/:estudanteId/matricula/:matriculaId', PessoaController.apagaMatricula);
 router.post('/pessoas/:id/restaura', PessoaController.restauraPessoa);
-router.post('/pessoas/:estudanteId/matricula/:matriculaId/restaura', PessoaController.restauraMatricula)
+router.post('/pessoas/:estudanteId/matricula/:matriculaId/restaura', PessoaController.restauraMatricula);
+router.delete('/pessoas/:id/force', PessoaController.apagaDefinitivoPessoa);
+router.get('/pessoas/:estudanteId/matricula/:matriculaId/apagada', PessoaController.consultaMatriculaApagado);
+router.get('/:nomeDoModelo/:consultaId/apagado', PessoaController.consultaRegistroApagado);
+router.delete('/pessoas/:estudanteId/matricula/:matriculaId/force', PessoaController.apagaDefinitivoMatricula);
 
 module.exports = router;

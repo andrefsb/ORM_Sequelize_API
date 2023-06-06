@@ -368,17 +368,55 @@ function () {
       }, null, null, [[1, 7]]);
     }
   }, {
-    key: "restauraMatricula",
-    value: function restauraMatricula(req, res) {
-      var _req$params4, estudanteId, matriculaId;
+    key: "consultaMatriculaApagado",
+    value: function consultaMatriculaApagado(req, res) {
+      var _req$params4, estudanteId, matriculaId, resultado;
 
-      return regeneratorRuntime.async(function restauraMatricula$(_context11) {
+      return regeneratorRuntime.async(function consultaMatriculaApagado$(_context11) {
         while (1) {
           switch (_context11.prev = _context11.next) {
             case 0:
               _req$params4 = req.params, estudanteId = _req$params4.estudanteId, matriculaId = _req$params4.matriculaId;
               _context11.prev = 1;
               _context11.next = 4;
+              return regeneratorRuntime.awrap(database.Matriculas.findOne({
+                paranoid: false,
+                where: {
+                  id: Number(matriculaId),
+                  estudante_id: Number(estudanteId)
+                }
+              }));
+
+            case 4:
+              resultado = _context11.sent;
+              return _context11.abrupt("return", res.status(200).json({
+                resultado: resultado
+              }));
+
+            case 8:
+              _context11.prev = 8;
+              _context11.t0 = _context11["catch"](1);
+              return _context11.abrupt("return", res.status(500).json(_context11.t0.message));
+
+            case 11:
+            case "end":
+              return _context11.stop();
+          }
+        }
+      }, null, null, [[1, 8]]);
+    }
+  }, {
+    key: "restauraMatricula",
+    value: function restauraMatricula(req, res) {
+      var _req$params5, estudanteId, matriculaId;
+
+      return regeneratorRuntime.async(function restauraMatricula$(_context12) {
+        while (1) {
+          switch (_context12.prev = _context12.next) {
+            case 0:
+              _req$params5 = req.params, estudanteId = _req$params5.estudanteId, matriculaId = _req$params5.matriculaId;
+              _context12.prev = 1;
+              _context12.next = 4;
               return regeneratorRuntime.awrap(database.Matriculas.restore({
                 where: {
                   id: Number(matriculaId),
@@ -387,18 +425,151 @@ function () {
               }));
 
             case 4:
-              return _context11.abrupt("return", res.status(200).json({
-                mensagem: "Id ".concat(id, " successfully restored.")
+              return _context12.abrupt("return", res.status(200).json({
+                mensagem: "Id ".concat(matriculaId, " from ").concat(estudanteId, " successfully restored.")
               }));
 
             case 7:
-              _context11.prev = 7;
-              _context11.t0 = _context11["catch"](1);
-              return _context11.abrupt("return", res.status(500).json(_context11.t0.message));
+              _context12.prev = 7;
+              _context12.t0 = _context12["catch"](1);
+              return _context12.abrupt("return", res.status(500).json(_context12.t0.message));
 
             case 10:
             case "end":
-              return _context11.stop();
+              return _context12.stop();
+          }
+        }
+      }, null, null, [[1, 7]]);
+    }
+  }, {
+    key: "consultaRegistroApagado",
+    value: function consultaRegistroApagado(req, res) {
+      var _req$params6, nomeDoModelo, consultaId, resultado;
+
+      return regeneratorRuntime.async(function consultaRegistroApagado$(_context13) {
+        while (1) {
+          switch (_context13.prev = _context13.next) {
+            case 0:
+              _req$params6 = req.params, nomeDoModelo = _req$params6.nomeDoModelo, consultaId = _req$params6.consultaId;
+              _context13.prev = 1;
+              nomeDoModelo = nomeDoModelo.charAt(0).toUpperCase() + nomeDoModelo.slice(1);
+
+              if (database[nomeDoModelo]) {
+                _context13.next = 5;
+                break;
+              }
+
+              return _context13.abrupt("return", res.status(404).json({
+                error: 'Model not found.'
+              }));
+
+            case 5:
+              _context13.next = 7;
+              return regeneratorRuntime.awrap(database[nomeDoModelo].findOne({
+                paranoid: false,
+                where: {
+                  id: Number(consultaId)
+                }
+              }));
+
+            case 7:
+              resultado = _context13.sent;
+
+              if (resultado) {
+                _context13.next = 10;
+                break;
+              }
+
+              return _context13.abrupt("return", res.status(404).json({
+                error: 'Data not found.'
+              }));
+
+            case 10:
+              return _context13.abrupt("return", res.status(200).json({
+                resultado: resultado
+              }));
+
+            case 13:
+              _context13.prev = 13;
+              _context13.t0 = _context13["catch"](1);
+              return _context13.abrupt("return", res.status(500).json({
+                error: _context13.t0.message
+              }));
+
+            case 16:
+            case "end":
+              return _context13.stop();
+          }
+        }
+      }, null, null, [[1, 13]]);
+    }
+  }, {
+    key: "apagaDefinitivoPessoa",
+    value: function apagaDefinitivoPessoa(req, res) {
+      var id;
+      return regeneratorRuntime.async(function apagaDefinitivoPessoa$(_context14) {
+        while (1) {
+          switch (_context14.prev = _context14.next) {
+            case 0:
+              id = req.params.id;
+              _context14.prev = 1;
+              _context14.next = 4;
+              return regeneratorRuntime.awrap(database.Pessoas.destroy({
+                where: {
+                  id: Number(id)
+                },
+                force: true
+              }));
+
+            case 4:
+              return _context14.abrupt("return", res.status(200).json({
+                mensagem: "Id ".concat(id, " permanently deleted.")
+              }));
+
+            case 7:
+              _context14.prev = 7;
+              _context14.t0 = _context14["catch"](1);
+              return _context14.abrupt("return", res.status(500).json(_context14.t0.message));
+
+            case 10:
+            case "end":
+              return _context14.stop();
+          }
+        }
+      }, null, null, [[1, 7]]);
+    }
+  }, {
+    key: "apagaDefinitivoMatricula",
+    value: function apagaDefinitivoMatricula(req, res) {
+      var _req$params7, estudanteId, matriculaId;
+
+      return regeneratorRuntime.async(function apagaDefinitivoMatricula$(_context15) {
+        while (1) {
+          switch (_context15.prev = _context15.next) {
+            case 0:
+              _req$params7 = req.params, estudanteId = _req$params7.estudanteId, matriculaId = _req$params7.matriculaId;
+              _context15.prev = 1;
+              _context15.next = 4;
+              return regeneratorRuntime.awrap(database.Matriculas.destroy({
+                where: {
+                  id: Number(matriculaId)
+                },
+                force: true
+              }));
+
+            case 4:
+              return _context15.abrupt("return", res.status(200).json({
+                mensagem: "Registration ".concat(matriculaId, " from student ").concat(estudanteId, " permanently deleted.")
+              }));
+
+            case 7:
+              _context15.prev = 7;
+              _context15.t0 = _context15["catch"](1);
+              return _context15.abrupt("return", res.status(500).json(_context15.t0.message));
+
+            case 10:
+            case "end":
+              return _context15.stop();
           }
         }
       }, null, null, [[1, 7]]);

@@ -66,7 +66,6 @@ class PessoaController {
         }
     }
 
-
     static async pegaUmaMatricula(req,res){
         const { estudanteId, matriculaId } = req.params;
         try{
@@ -120,6 +119,22 @@ class PessoaController {
         }
     }
 
+    static async consultaMatriculaApagado(req, res) {
+        const { estudanteId, matriculaId } = req.params
+        try {
+          const resultado = await database.Matriculas.findOne({
+            paranoid: false,
+            where: { 
+                id : Number(matriculaId),
+                estudante_id : Number(estudanteId) 
+            }
+          });
+          return res.status(200).json({resultado})
+        } catch (error) {
+          return res.status(500).json(error.message)
+        }
+    }
+
     static async restauraMatricula(req, res) {
         const { estudanteId, matriculaId } = req.params
         try {
@@ -129,11 +144,63 @@ class PessoaController {
               estudante_id: Number(estudanteId)
             }
           })
-          return res.status(200).json({mensagem: `Id ${id} successfully restored.`})
+          return res.status(200).json({mensagem: `Id ${matriculaId} from ${estudanteId} successfully restored.`})
         } catch (error) {
           return res.status(500).json(error.message)
         }
-      }
+    }
+
+    static async consultaRegistroApagado(req, res) {
+        let { nomeDoModelo, consultaId } = req.params;
+        try {
+          nomeDoModelo = nomeDoModelo.charAt(0).toUpperCase() + nomeDoModelo.slice(1);
+      
+          if (!database[nomeDoModelo]) {
+            return res.status(404).json({ error: 'Model not found.' });
+          }
+      
+          const resultado = await database[nomeDoModelo].findOne({
+            paranoid: false,
+            where: { id: Number(consultaId) }
+          });
+      
+          if (!resultado) {
+            return res.status(404).json({ error: 'Data not found.' });
+          }
+      
+          return res.status(200).json({ resultado });
+        } catch (error) {
+          return res.status(500).json({ error: error.message });
+        }
+    }
+
+    static async apagaDefinitivoPessoa(req,res){
+        const { id } = req.params;
+        try{
+            await database.Pessoas.destroy({ where: {
+                id: Number(id)
+              },
+              force: true
+            });
+            return res.status(200).json({mensagem: `Id ${id} permanently deleted.`});
+        }catch(error){
+            return res.status(500).json(error.message);
+        }
+    }
+
+    static async apagaDefinitivoMatricula(req,res){
+        const { estudanteId, matriculaId } = req.params;
+        try{
+            await database.Matriculas.destroy({ where: {
+                id: Number(matriculaId)
+              },
+              force: true
+            });
+            return res.status(200).json({mensagem: `Registration ${matriculaId} from student ${estudanteId} permanently deleted.`});
+        }catch(error){
+            return res.status(500).json(error.message);
+        }
+    }
 }
 
 module.exports = PessoaController;

@@ -215,6 +215,41 @@ function () {
         }
       }, null, null, [[1, 7]]);
     }
+  }, {
+    key: "apagaDefinitivoNivel",
+    value: function apagaDefinitivoNivel(req, res) {
+      var id;
+      return regeneratorRuntime.async(function apagaDefinitivoNivel$(_context7) {
+        while (1) {
+          switch (_context7.prev = _context7.next) {
+            case 0:
+              id = req.params.id;
+              _context7.prev = 1;
+              _context7.next = 4;
+              return regeneratorRuntime.awrap(database.Niveis.destroy({
+                where: {
+                  id: Number(id)
+                },
+                force: true
+              }));
+
+            case 4:
+              return _context7.abrupt("return", res.status(200).json({
+                mensagem: "Id ".concat(id, " permanently deleted.")
+              }));
+
+            case 7:
+              _context7.prev = 7;
+              _context7.t0 = _context7["catch"](1);
+              return _context7.abrupt("return", res.status(500).json(_context7.t0.message));
+
+            case 10:
+            case "end":
+              return _context7.stop();
+          }
+        }
+      }, null, null, [[1, 7]]);
+    }
   }]);
 
   return NivelController;
