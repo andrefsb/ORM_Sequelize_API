@@ -1,1 +1,1 @@
-1.API to manage an English school, using ORM.
+1.API to manage an English course, using ORM.
