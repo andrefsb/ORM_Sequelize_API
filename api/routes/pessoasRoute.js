@@ -11,6 +11,7 @@ router
 .get('/pessoas/:estudanteId/matricula/:matriculaId/apagada', PessoaController.consultaMatriculaApagado)
 .get('/pessoas/:estudanteId/matricula', PessoaController.pegaMatriculas)
 .get('/:nomeDoModelo/:consultaId/apagado', PessoaController.consultaRegistroApagado)
+.get('/pessoas/matricula/:turmaId/confirmadas', PessoaController.pegaMatriculasPorTurma)
 .post('/pessoas', PessoaController.criaPessoa)
 .post('/pessoas/:id/restaura', PessoaController.restauraPessoa)
 .post('/pessoas/:estudanteId/matricula', PessoaController.criaMatricula)
