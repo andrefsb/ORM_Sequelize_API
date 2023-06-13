@@ -14,11 +14,7 @@ class NivelController {
   static async pegaUmNivel(req, res) {
     const { id } = req.params
     try {
-      const umNivel = await database.Niveis.findOne( { 
-        where: { 
-          id: Number(id) 
-        }
-      })
+      const umNivel = await niveisServices.pegaUmRegistro(id)
       return res.status(200).json(umNivel)
     } catch (error) {
       return res.status(500).json(error.message)
@@ -40,7 +36,7 @@ class NivelController {
     const novasInfos = req.body
     try {
       database.sequelize.transaction(async transacao =>{
-      await database.Niveis.update(novasInfos, { where: { id: Number(id) }}, {transaction: transacao})
+      await niveisServices.atualizaRegistro(novasInfos, { where: { id: Number(id) }}, {transaction: transacao})
       const nivelAtualizado = await database.Niveis.findOne( { where: { id: Number(id) }})
       return res.status(200).json(nivelAtualizado)
       })

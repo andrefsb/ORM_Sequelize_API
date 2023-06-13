@@ -23,11 +23,7 @@ class PessoaController {
     static async pegaUmaPessoa(req,res){
         const { id } = req.params;
         try{
-            const umaPessoa = await database.Pessoas.findOne({
-                where: { 
-                    id : Number(id) 
-                }
-            })
+            const umaPessoa = await pessoasServices.pegaUmRegistro(id)
             return res.status(200).json(umaPessoa);
         }catch(error){
             return res.status(500).json(error.message);
@@ -274,12 +270,9 @@ class PessoaController {
     static async cancelaPessoa(req, res){
         const { estudanteId } = req.params;
         try{
-            database.sequelize.transaction(async transacao =>{
-                await database.Pessoas.update({ ativo: false }, {where: {id: Number(estudanteId) }}, {transaction: transacao});
-                await database.Matriculas.update({ status: 'cancelado' }, {where: {estudante_id: Number(estudanteId)}}, {transaction: transacao});
-    
-                return res.status(200).json({message: `Student ${estudanteId} enrollment canceled.`});
-            })
+            await pessoasServices.cancelaPessoaEMatriculas(Number(estudanteId))
+            return res.status(200).json({message: `Student ${estudanteId} enrollment canceled.`});
+            
         }catch(error){
             return res.status(500).json(error.message);
         }

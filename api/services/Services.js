@@ -10,15 +10,24 @@ class Services{
     }
 
     async pegaUmRegistro(id){
-
+        return database[this.nomeDoModelo].findOne({ where: { id: id }})
     }
 
     async criaRegistro(dados){
         
     }
 
-    async atualizaRegistro(id, dadosAtualizados){
-        
+    async atualizaRegistro( dadosAtualizados, id, transacao ={}){
+        return database.sequelize.transaction(async transacao =>{
+            await database[this.nomeDoModelo]
+            .update(dadosAtualizados, { where: { id: id }}, transacao)
+        })
+    }
+
+
+    async atualizaRegistros(dadosAtualizados, where,  transacao ={}){
+        return database[this.nomeDoModelo]
+        .update(dadosAtualizados, { where: { ...where }}, transacao)
     }
 
     async apagaRegistro(id){
