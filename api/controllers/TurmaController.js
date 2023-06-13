@@ -45,9 +45,11 @@ class TurmaController {
     const { id } = req.params
     const novasInfos = req.body
     try {
-      await database.Turmas.update(novasInfos, { where: { id: Number(id) }})
+      database.sequelize.transaction(async transacao =>{
+      await database.Turmas.update(novasInfos, { where: { id: Number(id) }}, {transaction: transacao})
       const turmaAtualizada = await database.Turmas.findOne( { where: { id: Number(id) }})
       return res.status(200).json(turmaAtualizada)
+      })
     } catch (error) {
       return res.status(500).json(error.message)
     }

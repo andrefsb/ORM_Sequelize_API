@@ -48,9 +48,11 @@ class PessoaController {
         const { id } = req.params;
         const novasInfos = req.body;
         try{
-            await database.Pessoas.update(novasInfos,{where: {id : Number(id)}});
+            database.sequelize.transaction(async transacao =>{
+            await database.Pessoas.update(novasInfos,{where: {id : Number(id)}}, {transaction: transacao});
             const pessoaAtualizada= await database.Pessoas.findOne({where: {id : Number(id)}});
             return res.status(200).json(pessoaAtualizada);
+            })
         }catch(error){
             return res.status(500).json(error.message);
         }
@@ -59,8 +61,10 @@ class PessoaController {
     static async apagaPessoa(req,res){
         const { id } = req.params;
         try{
-            await database.Pessoas.destroy({where: {id : Number(id)}});
+            database.sequelize.transaction(async transacao =>{
+            await database.Pessoas.destroy({where: {id : Number(id)}}, {transaction: transacao});
             return res.status(200).json({mensagem: `Id ${id} successfully deleted.`});
+            })
         }catch(error){
             return res.status(500).json(error.message);
         }
@@ -106,14 +110,16 @@ class PessoaController {
         const { estudanteId, matriculaId } = req.params;
         const novasInfos = req.body;
         try{
+            database.sequelize.transaction(async transacao =>{
             await database.Matriculas.update(novasInfos,{
                 where: {
                     id : Number(matriculaId),
                     estudante_id: Number (estudanteId)
                 }
-            });
+            },{transaction: transacao});
             const matriculaAtualizada= await database.Matriculas.findOne({where: {id : Number(matriculaId)}});
             return res.status(200).json(matriculaAtualizada);
+        })
         }catch(error){
             return res.status(500).json(error.message);
         }
@@ -122,8 +128,10 @@ class PessoaController {
     static async apagaMatricula(req,res){
         const { estudanteId, matriculaId } = req.params;
         try{
-            await database.Matriculas.destroy({where: {id : Number(matriculaId)}});
+            database.sequelize.transaction(async transacao =>{
+            await database.Matriculas.destroy({where: {id : Number(matriculaId)}},{transaction: transacao});
             return res.status(200).json({mensagem: `Registration ${matriculaId} from student ${estudanteId} successfully deleted.`});
+            })
         }catch(error){
             return res.status(500).json(error.message);
         }
@@ -148,13 +156,15 @@ class PessoaController {
     static async restauraMatricula(req, res) {
         const { estudanteId, matriculaId } = req.params
         try {
+        database.sequelize.transaction(async transacao =>{
           await database.Matriculas.restore({
             where: {
               id: Number(matriculaId),
               estudante_id: Number(estudanteId)
             }
-          })
+          },{transaction: transacao})
           return res.status(200).json({mensagem: `Id ${matriculaId} from ${estudanteId} successfully restored.`})
+            })
         } catch (error) {
           return res.status(500).json(error.message)
         }
@@ -187,12 +197,14 @@ class PessoaController {
     static async apagaDefinitivoPessoa(req,res){
         const { id } = req.params;
         try{
+            database.sequelize.transaction(async transacao =>{
             await database.Pessoas.destroy({ where: {
                 id: Number(id)
               },
               force: true
-            });
+            },{transaction: transacao});
             return res.status(200).json({mensagem: `Id ${id} permanently deleted.`});
+        })
         }catch(error){
             return res.status(500).json(error.message);
         }
@@ -201,12 +213,14 @@ class PessoaController {
     static async apagaDefinitivoMatricula(req,res){
         const { estudanteId, matriculaId } = req.params;
         try{
+            database.sequelize.transaction(async transacao =>{
             await database.Matriculas.destroy({ where: {
                 id: Number(matriculaId)
               },
               force: true
-            });
+            },{transaction: transacao});
             return res.status(200).json({mensagem: `Registration ${matriculaId} from student ${estudanteId} permanently deleted.`});
+            })
         }catch(error){
             return res.status(500).json(error.message);
         }
@@ -260,10 +274,12 @@ class PessoaController {
     static async cancelaPessoa(req, res){
         const { estudanteId } = req.params;
         try{
-            await database.Pessoas.update({ ativo: false }, {where: {id: Number(estudanteId) }});
-            await database.Matriculas.update({ status: 'cancelado' }, {where: {estudante_id: Number(estudanteId) }});
-
-            return res.status(200).json({message: `Student ${estudanteId} enrollment canceled.`});
+            database.sequelize.transaction(async transacao =>{
+                await database.Pessoas.update({ ativo: false }, {where: {id: Number(estudanteId) }}, {transaction: transacao});
+                await database.Matriculas.update({ status: 'cancelado' }, {where: {estudante_id: Number(estudanteId)}}, {transaction: transacao});
+    
+                return res.status(200).json({message: `Student ${estudanteId} enrollment canceled.`});
+            })
         }catch(error){
             return res.status(500).json(error.message);
         }

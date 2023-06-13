@@ -38,9 +38,11 @@ class NivelController {
     const { id } = req.params
     const novasInfos = req.body
     try {
-      await database.Niveis.update(novasInfos, { where: { id: Number(id) }})
+      database.sequelize.transaction(async transacao =>{
+      await database.Niveis.update(novasInfos, { where: { id: Number(id) }}, {transaction: transacao})
       const nivelAtualizado = await database.Niveis.findOne( { where: { id: Number(id) }})
       return res.status(200).json(nivelAtualizado)
+      })
     } catch (error) {
       return res.status(500).json(error.message)
     }
